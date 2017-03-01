@@ -13,7 +13,7 @@ struct Vec3
 
     T length() const { return sqrt(dot(*this)); } // sqrt(x * x + y * y + z * z)
     T dot(const Vec3& v) const { return (x * v.x + y * v.y + z * v.z); }
-    Vec3 cross(const Vec3& v) const { return Vec3{y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x}; }
+    Vec3 cross(const Vec3& v) const { return Vec3{ y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x }; }
 
     Vec3& normalize() {
         T len = length();
@@ -45,4 +45,3 @@ class Vector : public Vec3<T>
 public:
     using Vec3<T>::Vec3;
 };
-

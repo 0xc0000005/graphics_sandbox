@@ -29,7 +29,6 @@ public:
         if (i != t) throw std::invalid_argument("Not enough arguments");
     }
 
-
     T& operator()(size_t i, size_t j) { return get(i, j); }
 
     Matrix2 operator*(Matrix2& rhs) const
