@@ -6,21 +6,26 @@
 
 #include "stdafx.h"
 #include <iostream>
-#include "Vec3.h"
+#include "Vec.h"
 #include "Matrix2.h"
 
 typedef double VecT;
-typedef Vec3<VecT> Vec_t;
+typedef Vec<VecT, 3> Vec_t;
 
-typedef Point<VecT> Point_t;
-typedef Vector<VecT> Vector_t;
+typedef Point<VecT, 3> Point_t;
+typedef Vector<VecT, 3> Vector_t;
+typedef Matrix2<VecT> Matrix_t;
 
 int main()
 {
     Vec_t v1{ 3.0, 3.0, 0 };
     Vec_t v2{ 4.0, 1.0, 0 };
+    Vec<VecT, 3> vv5{ 4.0, 1.0, 0, 9.9 };
+    Vec<int, 3> vv4;
+    v1 + v2;
+    //v1 + vv5;
 
-    VecT scal_proj1 = v1.dot(v2) / v2.length();
+    VecT scal_proj1 = v1.dot(vv5) / v2.length();
     Vec_t v3 = v2;
     v3.normalize();
     VecT scal_proj2 = v1.dot(v3);
@@ -30,14 +35,14 @@ int main()
     Point_t p1{ 0 };
     Vector_t v;
 
-    Matrix2<VecT> m(3, 4);
+    Matrix_t m(3, 4);
     for (size_t c = 0, i = 0; i < m.rows(); ++i)
         for (size_t j = 0; j < m.cols(); ++j)
             m(i, j) = ++c;
-    Matrix2<VecT> m2 = m;
+    Matrix_t m2 = m;
 
-    Matrix2<VecT> mm1 = { {3.0, -2.0, 5.0}, {3.0, 0.0, 4.0} };
-    Matrix2<VecT> mm2 = { { 2.0, 3.0}, {-9.0, 0 }, { 0.0, 4.0 } };
+    Matrix_t mm1 = { {3.0, -2.0, 5.0}, {3.0, 0.0, 4.0} };
+    Matrix_t mm2 = { { 2.0, 3.0}, {-9.0, 0 }, { 0.0, 4.0 } };
 
     std::cout << mm1.to_string() << std::endl << mm2.to_string() << std::endl;
 
@@ -46,10 +51,17 @@ int main()
 
     std::cout << mm1.to_string() << std::endl << mm2.to_string() << std::endl;
 
-    Matrix2<VecT> mm = mm1 * mm2;
+    Matrix_t mm = mm1 * mm2;
     std::cout << mm.to_string() << std::endl;
     mm.transpose();
     std::cout << mm.to_string() << std::endl;
+
+    auto identity = Matrix2<int>::identity(5);
+    std::cout << identity.to_string() << std::endl;
+
+    Vec<int, 5> vv{ 1, 2, 3, 4, 5 };
+    Matrix2<int> vvm = vv;
+    std::cout << vvm.to_string() << std::endl << (vv * identity).to_string();
 
     return 0;
 }

@@ -9,6 +9,7 @@ class Matrix2
 {
 public:
     Matrix2(size_t rs, size_t cs) : r(rs), c(cs), data(std::make_unique<T[]>(rs * cs)) { std::fill_n(data.get(), total(), 0); }
+    Matrix2(size_t s) : Matrix2(s, s) {}
 
     Matrix2(const Matrix2& m) : r(m.r), c(m.c), transposed(m.transposed), data(std::make_unique<T[]>(m.total())) {
         std::copy(m.data.get(), m.data.get() + m.total(), stdext::checked_array_iterator<T*>(data.get(), m.total()));
@@ -29,9 +30,9 @@ public:
         if (i != t) throw std::invalid_argument("Not enough arguments");
     }
 
-    T& operator()(size_t i, size_t j) { return get(i, j); }
+    T& operator()(size_t i, size_t j) const { return get(i, j); }
 
-    Matrix2 operator*(Matrix2& rhs) const
+    Matrix2 operator*(const Matrix2& rhs) const
     {
         if (cols() != rhs.rows())
             throw std::invalid_argument("Matrices sizes does not match multiplication criteria");
@@ -42,16 +43,24 @@ public:
             for (size_t j = 0; j < m.cols(); ++j) {
                 T val = 0;
                 for (size_t k = 0; k < cols(); ++k)
-                    val += get(i, k) * rhs.get(k, j);
+                    val += get(i, k) * rhs(k, j);
                 m(i, j) = val;
             }
+        return m;
+    }
+
+    static Matrix2 identity(size_t n)
+    {
+        Matrix2 m(n);
+        for (size_t i = 0; i < m.rows(); ++i)
+            m(i, i) = 1;
         return m;
     }
 
     size_t rows() const { return transposed ? c : r; }
     size_t cols() const { return transposed ? r : c; }
 
-    std::string to_string()
+    std::string to_string() const
     {
         std::stringstream ss;
         for (size_t i = 0; i < rows(); ++i) {
@@ -62,7 +71,7 @@ public:
         return ss.str();
     }
 
-    void transpose() { transposed = !transposed; }
+    Matrix2& transpose() { transposed = !transposed; return *this; }
 
 private:
     bool transposed = false;
@@ -72,5 +81,7 @@ private:
 
     size_t total() const { return r * c; }
     size_t index(size_t i, size_t j) const { return transposed ? (i + j * c) : (i * c + j); }
+
     T& get(size_t i, size_t j) const { return data.get()[index(i, j)]; }
 };
+
