@@ -4,84 +4,90 @@
 #include <iterator>
 #include <sstream>
 
-template<typename T>
+template<
+    typename T, size_t R, size_t C=R,
+    typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
 class Matrix2
 {
 public:
-    Matrix2(size_t rs, size_t cs) : r(rs), c(cs), data(std::make_unique<T[]>(rs * cs)) { std::fill_n(data.get(), total(), 0); }
-    Matrix2(size_t s) : Matrix2(s, s) {}
+    Matrix2() { data.fill(0); }
 
-    Matrix2(const Matrix2& m) : r(m.r), c(m.c), transposed(m.transposed), data(std::make_unique<T[]>(m.total())) {
-        std::copy(m.data.get(), m.data.get() + m.total(), stdext::checked_array_iterator<T*>(data.get(), m.total()));
-    }
+    Matrix2(const Matrix2& m) : data(m.data) {}
 
-    Matrix2(Matrix2&& m) : r(m.r), c(m.c), transposed(m.transposed), data(std::move(m.data)) {}
+    Matrix2(Matrix2&& m) : data(std::move(m.data)) {}
 
-    Matrix2(std::initializer_list<std::initializer_list<T>> l) : r(l.size()), c(l.begin() != l.end() ? l.begin()->size() : 0)
+    Matrix2(std::initializer_list<std::initializer_list<T>> l)
     {
-        data = std::make_unique<T[]>(r * c);
-        int i = 0, t = total();
-        for (auto lr = l.begin(); lr != l.end(); ++lr) {
-            for (auto lc = lr->begin(); lc != lr->end(); ++lc) {
-                if (i >= t) throw std::invalid_argument("Too many arguments");
-                data.get()[i++] = *lc;
+        auto r = l.begin();
+        size_t n = 0;
+        for (size_t i = 0; i < R; ++i) {
+            if (r != l.end()) {
+                auto c = r->begin();
+                for (size_t j = 0; j < C; ++j)
+                    data[n++] = c != r->end() ? *c++ : 0;
+                ++r;
+            }
+            else {
+                for (size_t j = 0; j < C; ++j)
+                    data[n++] = 0;
             }
         }
-        if (i != t) throw std::invalid_argument("Not enough arguments");
     }
 
-    T& operator()(size_t i, size_t j) const { return get(i, j); }
+    T& operator()(size_t i, size_t j) { return data[index(i, j)]; }
+    const T& operator()(size_t i, size_t j) const { return data[index(i, j)]; }
 
-    Matrix2 operator*(const Matrix2& rhs) const
+    template<typename T, size_t RR, size_t CC>
+    Matrix2<typename std::enable_if<C == RR, T>::type, R, CC>
+    operator*(const Matrix2<T, RR, CC>& rhs) const
     {
-        if (cols() != rhs.rows())
-            throw std::invalid_argument("Matrices sizes does not match multiplication criteria");
-
-        Matrix2 m(rows(), rhs.cols());
+        Matrix2<T, R, CC> m;
 
         for (size_t i = 0; i < rows(); ++i)
             for (size_t j = 0; j < m.cols(); ++j) {
                 T val = 0;
                 for (size_t k = 0; k < cols(); ++k)
-                    val += get(i, k) * rhs(k, j);
+                    val += data[index(i, k)] * rhs(k, j);
                 m(i, j) = val;
             }
         return m;
     }
 
-    static Matrix2 identity(size_t n)
+    static Matrix2 identity()
     {
-        Matrix2 m(n);
-        for (size_t i = 0; i < m.rows(); ++i)
+        Matrix2<T, R, R> m;
+        for (size_t i = 0; i < R; ++i)
             m(i, i) = 1;
         return m;
     }
 
-    size_t rows() const { return transposed ? c : r; }
-    size_t cols() const { return transposed ? r : c; }
+    size_t rows() const { return R; }
+    size_t cols() const { return C; }
 
     std::string to_string() const
     {
         std::stringstream ss;
         for (size_t i = 0; i < rows(); ++i) {
             for (size_t j = 0; j < cols(); ++j)
-                ss << get(i, j) << " ";
+                ss << data[index(i, j)] << (j < cols() - 1 ? " " : "");
             ss << std::endl;
         }
         return ss.str();
     }
 
-    Matrix2& transpose() { transposed = !transposed; return *this; }
+    Matrix2<T, C, R> transpose()
+    {
+        Matrix2<T, C, R> m;
+        for (size_t i = 0; i < R; ++i)
+            for (size_t j = 0; j < C; ++j)
+                m(j, i) = data[index(i, j)];
+        return m;
+    }
 
 private:
-    bool transposed = false;
-    const size_t r;
-    const size_t c;
-    std::unique_ptr<T[]> data;
+    std::array<T, R*C> data;
 
-    size_t total() const { return r * c; }
-    size_t index(size_t i, size_t j) const { return transposed ? (i + j * c) : (i * c + j); }
-
-    T& get(size_t i, size_t j) const { return data.get()[index(i, j)]; }
+    size_t total() const { return R * C; }
+    size_t index(size_t i, size_t j) const { return (i * C + j); }
 };
 
