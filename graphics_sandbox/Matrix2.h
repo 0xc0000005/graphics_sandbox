@@ -34,8 +34,29 @@ public:
         }
     }
 
-    T& operator()(size_t i, size_t j) { return data[index(i, j)]; }
-    const T& operator()(size_t i, size_t j) const { return data[index(i, j)]; }
+    T& operator()(size_t i, size_t j) { return data.at(index(i, j)); }
+
+    const T& operator()(size_t i, size_t j) const { return data.at(index(i, j)); }
+
+    template<typename T, size_t RR, size_t CC,
+        typename = typename std::enable_if<R == RR && C == CC, T>::type>
+        bool operator==(const Matrix2<T, RR, CC>& m) const
+    {
+        if (this == &m)
+            return true;
+        for (int i = 0; i < R; ++i)
+            for (int j = 0; j < C; ++j)
+                if (data[index(i, j)] != m(i, j))
+                    return false;
+        return true;
+    }
+
+    template<typename T, size_t RR, size_t CC,
+        typename = typename std::enable_if<R == RR && C == CC, T>::type>
+        bool operator!=(const Matrix2<T, RR, CC>& m) const
+    {
+        return !(*this == m);
+    }
 
     template<typename T, size_t RR, size_t CC>
     Matrix2<typename std::enable_if<C == RR, T>::type, R, CC>

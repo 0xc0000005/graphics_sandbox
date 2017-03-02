@@ -1,5 +1,5 @@
 #include <iostream>
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "Vec.h"
 
@@ -34,6 +34,16 @@ TEST(test_vect_creation, create_with_short_init_list)
     ASSERT_EQ(v(1), 2) << "Get 2nd value (2)";
     ASSERT_EQ(v(2), 0) << "Get 3rd value (0 by default)";
     ASSERT_THROW(v(3), std::out_of_range) << "Get non-existing value";
+}
+
+TEST(test_vect_creation, copy_constuctor)
+{
+    Vec<int, 3> v = { 1, 2, 3, 4 };
+    auto v2 = v;
+    ASSERT_EQ(v2(0), 1) << "Get 1st value (1)";
+    ASSERT_EQ(v2(1), 2) << "Get 2nd value (2)";
+    ASSERT_EQ(v2(2), 3) << "Get 3rd value (3)";
+    ASSERT_THROW(v2(3), std::out_of_range) << "Get non-existing value";
 }
 
 TEST(test_vect_operations, comparation)
@@ -113,4 +123,16 @@ TEST(test_vect_operations, normalize)
     ASSERT_NEAR(v1.normalize().length(), 1.0, 0.0001);
 }
 
+TEST(test_vect_operations, vect_to_matrix)
+{
+    Vec<int, 4> v1 = { 1, 2, 3, 4 };
+    auto m1 = v1.to_matrix();
+    ASSERT_EQ(m1, (Matrix2<int, 1, 4>{ {1, 2, 3, 4} }));
+}
 
+TEST(test_vect_operations, vect_to_matrix_transposed)
+{
+    Vec<int, 4> v1 = { 1, 2, 3, 4 };
+    auto m1 = v1.to_matrix_tr();
+    ASSERT_EQ(m1, (Matrix2<int, 4, 1>{ { 1 }, { 2 }, { 3 }, { 4 } }));
+}
