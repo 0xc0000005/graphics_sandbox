@@ -176,15 +176,15 @@ private:
 };
 
 template<typename T, size_t R, size_t C>
-Matrix2<T, 1, C> operator*(const Matrix2<T, R, C>& m, const Vec<int, C>& v)
+Matrix2<T, R, 1> operator*(const Matrix2<T, R, C>& m, const Vec<int, C>& v)
 {
-    return (m * v.to_matrix());
+    return (m * v.to_matrix_col());
 }
 
 template<typename T, size_t R, size_t C>
-Matrix2<T, 1, C> operator*(const Vec<int, C>& v, const Matrix2<T, R, C>& m)
+Matrix2<T, 1, C> operator*(const Vec<int, R>& v, const Matrix2<T, R, C>& m)
 {
-    return (v.to_matrix() * m);
+    return (v.to_matrix_row() * m);
 }
 
 

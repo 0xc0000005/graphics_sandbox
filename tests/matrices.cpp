@@ -1,6 +1,7 @@
 #include <iostream>
 #include <gtest/gtest.h>
 
+#include "Vec.h"
 #include "Matrix2.h"
 
 template<typename T, size_t R, size_t C>
@@ -86,3 +87,27 @@ TEST(test_matrix_operations, matrices_multiplication)
     ASSERT_EQ(m(1, 0), 32);
     ASSERT_EQ(m(1, 1), 77);
 }
+
+TEST(test_matrix_operations, vec_to_matrix_multiplication)
+{
+    Vec<int, 2> v = { 2, 4 };
+    Matrix2<int, 2, 3> m1 = { { 1, 2, 3 },{ 4, 5, 6 } };
+    auto m = v * m1;
+    ASSERT_EQ(m.rows(), 1) << "rows in result matrix";
+    ASSERT_EQ(m.cols(), 3) << "columns in result matrix";
+    ASSERT_EQ(m(0, 0), 18);
+    ASSERT_EQ(m(0, 1), 24);
+    ASSERT_EQ(m(0, 2), 30);
+}
+
+TEST(test_matrix_operations, matrix_to_vec_multiplication)
+{
+    Vec<int, 3> v = { 2, 4, 6 };
+    Matrix2<int, 2, 3> m1 = { { 1, 2, 3 },{ 4, 5, 6 } };
+    auto m = m1 * v;
+    ASSERT_EQ(m.rows(), 2) << "rows in result matrix";
+    ASSERT_EQ(m.cols(), 1) << "columns in result matrix";
+    ASSERT_EQ(m(0, 0), 28);
+    ASSERT_EQ(m(0, 1), 64);
+}
+
