@@ -15,7 +15,7 @@ template<
 public:
     Vec() : Vec(0) {}
 
-    Vec(const T& x) { data.fill(0); }
+    Vec(const T& x) { data.fill(x); }
 
     Vec(std::initializer_list<T> l)
     {
@@ -39,7 +39,7 @@ public:
         return result;
     }
 
-    double length() { return sqrt(static_cast<double>(dot(*this))); }
+    double length() { return std::sqrt(static_cast<double>(dot(*this))); }
 
     template<typename T, size_t NN>
     Vec<typename std::enable_if<N == NN && NN == 3, T>::type, N>
@@ -148,7 +148,7 @@ public:
         return ss.str();
     }
 
-    Matrix2<T, 1, N> to_matrix() const
+    Matrix2<T, 1, N> to_matrix_row() const
     {
         Matrix2<T, 1, N> m;
         for (size_t i = 0; i < size(); ++i)
@@ -157,7 +157,7 @@ public:
 
     }
 
-    Matrix2<T, N, 1> to_matrix_tr() const // transposed version
+    Matrix2<T, N, 1> to_matrix_col() const // transposed version
     {
         Matrix2<T, N, 1> m;
         for (size_t i = 0; i < size(); ++i)
@@ -167,6 +167,8 @@ public:
     }
 
     const size_t size() const { return data.size(); }
+
+    const T* raw() const { return data.data(); }
 
 private:
 

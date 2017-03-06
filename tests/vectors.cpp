@@ -18,6 +18,15 @@ TEST(test_vect_creation, def_values)
     ASSERT_THROW(v(3), std::out_of_range) << "Get non-existing value";
 }
 
+TEST(test_vect_creation, def_specific_values)
+{
+    Vec<float, 3> v(3.5);
+    ASSERT_EQ(v(0), 3.5) << "Get 1st value (0 by default)";
+    ASSERT_EQ(v(1), 3.5) << "Get 2nd value (0 by default)";
+    ASSERT_EQ(v(2), 3.5) << "Get 3rd value (0 by default)";
+    ASSERT_THROW(v(3), std::out_of_range) << "Get non-existing value";
+}
+
 TEST(test_vect_creation, create_with_long_init_list)
 {
     Vec<int, 3> v = { 1, 2, 3, 4 };
@@ -126,13 +135,13 @@ TEST(test_vect_operations, normalize)
 TEST(test_vect_operations, vect_to_matrix)
 {
     Vec<int, 4> v1 = { 1, 2, 3, 4 };
-    auto m1 = v1.to_matrix();
+    auto m1 = v1.to_matrix_row();
     ASSERT_EQ(m1, (Matrix2<int, 1, 4>{ {1, 2, 3, 4} }));
 }
 
 TEST(test_vect_operations, vect_to_matrix_transposed)
 {
     Vec<int, 4> v1 = { 1, 2, 3, 4 };
-    auto m1 = v1.to_matrix_tr();
+    auto m1 = v1.to_matrix_col();
     ASSERT_EQ(m1, (Matrix2<int, 4, 1>{ { 1 }, { 2 }, { 3 }, { 4 } }));
 }

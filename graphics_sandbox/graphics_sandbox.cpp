@@ -7,40 +7,15 @@
 #include "stdafx.h"
 #include <iostream>
 #include "Vec.h"
-#include "Matrix2.h"
+#include "TransformationMatrix.h"
 
-typedef double VecT;
-typedef Vec<VecT, 3> Vec_t;
-
-typedef Point<VecT, 3> Point_t;
-typedef Vector<VecT, 3> Vector_t;
-typedef Matrix2<VecT, 3, 4> Matrix_t;
+const double pi = std::acos(-1.0); // pi constant calculated
+inline double d2r(double degree) { return degree * pi / 180.0; } // degrees to radians
 
 int main()
 {
-
-    //Matrix2<VecT, 2, 3> mm1 = { {3.0, -2.0, 5.0}, {3.0, 0.0, 4.0} };
-    //Matrix2<VecT, 3, 2> mm2 = { { 2.0, 3.0}, {-9.0, 0 } };
-
-
-    //std::cout << mm1.to_string() << std::endl << mm2.to_string() << std::endl;
-
-    //auto mm1t = mm1.transpose();
-    //auto mm2t = mm2.transpose();
-
-    //std::cout << mm1t.to_string() << std::endl << mm2t.to_string() << std::endl;
-
-    //auto mm = mm1 * mm2;
-    //std::cout << mm.to_string() << std::endl;
-    //auto mmt = mm.transpose();
-    //std::cout << mmt.to_string() << std::endl;
-
-    //auto identity = Matrix2<int, 5>::identity();
-    //std::cout << identity.to_string() << std::endl;
-
-    //Vec<int, 5> vv{ 1, 2, 3, 4, 5 };
-    //Matrix2<int, 1, 5> vvm = vv.to_matrix();
-    //std::cout << vvm.to_string() << std::endl << (vv * identity).to_string();
+    auto m = TransformationMatrix<double>::translate(0.5, 0.6, 0.7);
+    std::cout << m.to_string() << std::endl;
 
     return 0;
 }

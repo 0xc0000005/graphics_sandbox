@@ -3,6 +3,7 @@
 #include <memory>
 #include <iterator>
 #include <sstream>
+#include <array>
 
 template<
     typename T, size_t R, size_t C=R,
@@ -105,10 +106,12 @@ public:
         return m;
     }
 
+    size_t size() const { return R * C; }
+
+    const T* raw() const { return data.data(); }
+
 private:
     std::array<T, R*C> data;
-
-    size_t total() const { return R * C; }
     size_t index(size_t i, size_t j) const { return (i * C + j); }
 };
 

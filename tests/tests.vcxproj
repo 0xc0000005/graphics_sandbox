@@ -158,6 +158,7 @@
     <ClCompile Include="matrices.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="tests.cpp" />
+    <ClCompile Include="transform_matrices.cpp" />
     <ClCompile Include="vectors.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <gtest/gtest.h>
 
-#include "Vec.h"
+#include "Matrix2.h"
 
 template<typename T, size_t R, size_t C>
 ::std::ostream& operator<<(::std::ostream& os, const Matrix2<T, R, C>& m)
