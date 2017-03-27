@@ -48,6 +48,13 @@ TEST(test_matrix_creation, copy_constuctor)
     ASSERT_THROW(m(4, 4), std::out_of_range) << "Get non-existing value";
 }
 
+TEST(test_matrix_creation, column_oriented)
+{
+    Matrix2<int, 3, 3> m = { {0, 3, 6}, {1, 4, 7}, {2, 5, 8} };
+    for (size_t i = 0; i < m.size(); ++i)
+        ASSERT_EQ(m.raw()[i], i);
+}
+
 TEST(test_matrix_operations, comparation)
 {
     Matrix2<int, 2, 3> m1 = { { 1, 2, 3 },{ 4, 5, 6 } };
@@ -108,6 +115,6 @@ TEST(test_matrix_operations, matrix_to_vec_multiplication)
     ASSERT_EQ(m.rows(), 2) << "rows in result matrix";
     ASSERT_EQ(m.cols(), 1) << "columns in result matrix";
     ASSERT_EQ(m(0, 0), 28);
-    ASSERT_EQ(m(0, 1), 64);
+    ASSERT_EQ(m(1, 0), 64);
 }
 

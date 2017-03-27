@@ -25,12 +25,12 @@ public:
             if (r != l.end()) {
                 auto c = r->begin();
                 for (size_t j = 0; j < C; ++j)
-                    data[n++] = c != r->end() ? *c++ : 0;
+                    data[index(i, j)] = c != r->end() ? *c++ : 0;
                 ++r;
             }
             else {
                 for (size_t j = 0; j < C; ++j)
-                    data[n++] = 0;
+                    data[index(i, j)] = 0;
             }
         }
     }
@@ -112,6 +112,6 @@ public:
 
 private:
     std::array<T, R*C> data;
-    size_t index(size_t i, size_t j) const { return (i * C + j); }
+    size_t index(size_t i, size_t j) const { return (i + j * R); }
 };
 
